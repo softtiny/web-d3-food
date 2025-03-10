@@ -17,7 +17,17 @@ jobs:
       - run: npm install
       - run: npx vite build
       - run: zip -r dist.zip ./dist
+      - name: Calculate tag name
+        run: |
+          name=dev
+          if [[ $GITHUB_REF == refs/tags/v* ]]; then
+            name=${GITHUB_REF:10}
+          fi
+          echo ::set-output name=val::$name
+          echo TAG=$name >> $GITHUB_ENV
+        id: tagname
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
+          tag: ${{ steps.tagname.outputs.val }}
           files: dist.zip
