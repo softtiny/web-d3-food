@@ -1,0 +1,22 @@
+name: Build Dist and Rlease
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+        contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'npm'
+      - run: npm install
+      - run: npx vite build
+      - run: zip -r dist.zip ./dist
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist.zip
