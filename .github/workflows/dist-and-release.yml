@@ -1,6 +1,9 @@
 name: Build Dist and Rlease
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -27,6 +30,6 @@ jobs:
         id: tagname
       - name: Release
         uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: ${{ steps.tagname.outputs.val }}
           files: dist.zip
